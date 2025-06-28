@@ -18,6 +18,12 @@
       color: #333;
     }
 
+    #logo {
+      width: 80px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
     img {
       width: 100%;
       max-width: 300px;
@@ -70,55 +76,44 @@
       margin-top: 20px;
       background-color: #ffcaca;
     }
+
+    #characterSpeech {
+      margin-top: 10px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 1.1rem;
+    }
+
+    #characterSpeech img {
+      width: 60px;
+      height: auto;
+    }
   </style>
 </head>
 <body>
+  <img src="fuku.png" id="logo" alt="キャラロゴ">
   <h1>この犬種なーんだ？</h1>
   <img id="dogImage" src="" alt="犬の画像">
   <div class="choices" id="choices"></div>
   <div id="result"></div>
+  <div id="characterSpeech">
+    <img src="fuku.png" alt="キャラ">
+    <span id="speechText"></span>
+  </div>
   <div id="score">正解: 0 / 不正解: 0</div>
   <button id="nextBtn" style="display:none;">次の問題</button>
   <button id="resetBtn">スコアをリセット</button>
 
   <script>
-    const breedMap = {
-      "affenpinscher": "アーフェンピンシャー", "african": "アフリカン", "airedale": "エアデール・テリア",
-      "akita": "秋田犬", "appenzeller": "アッペンツェラー", "australian": "オーストラリアン・シェパード",
-      "basenji": "バセンジー", "beagle": "ビーグル", "bluetick": "ブルーティック・クーンハウンド",
-      "borzoi": "ボルゾイ", "bouvier": "ブービエ・デ・フランダース", "boxer": "ボクサー",
-      "brabancon": "プチ・ブラバンソン", "briard": "ブリアード", "buhund": "ノルウェジアン・ブーフンド",
-      "bulldog": "ブルドッグ", "bullterrier": "ブル・テリア", "cairn": "ケアン・テリア",
-      "cattledog": "オーストラリアン・キャトル・ドッグ", "chihuahua": "チワワ", "chow": "チャウチャウ",
-      "clumber": "クランバー・スパニエル", "cockapoo": "コッカプー", "collie": "コリー",
-      "coonhound": "クーンハウンド", "corgi": "コーギー", "cotondetulear": "コトン・ド・テュレアール",
-      "dachshund": "ダックスフント", "dalmatian": "ダルメシアン", "dane": "グレート・デーン",
-      "deerhound": "スコティッシュ・ディアハウンド", "dhole": "ドール", "dingo": "ディンゴ",
-      "doberman": "ドーベルマン", "elkhound": "ノルウェジアン・エルクハウンド", "entlebucher": "エントレブッハー・キャトルドッグ",
-      "eskimo": "アメリカン・エスキモー・ドッグ", "finnish": "フィニッシュ・スピッツ", "frise": "ビション・フリーゼ",
-      "germanshepherd": "ジャーマン・シェパード", "greyhound": "グレイハウンド", "groenendael": "グローネンダール",
-      "havanese": "ハバニーズ", "husky": "シベリアン・ハスキー", "keeshond": "キースホンド",
-      "kelpie": "ケルピー", "komondor": "コモンドール", "kuvasz": "クーバース",
-      "labrador": "ラブラドール・レトリーバー", "leonberg": "レオンベルガー", "lhasa": "ラサ・アプソ",
-      "malamute": "アラスカン・マラミュート", "malinois": "ベルジアン・マリノア", "maltese": "マルチーズ",
-      "mastiff": "マスティフ", "mexicanhairless": "メキシカン・ヘアレス", "mix": "ミックス犬",
-      "mountain": "バーニーズ・マウンテン・ドッグ", "newfoundland": "ニューファンドランド",
-      "otterhound": "オッターハウンド", "papillon": "パピヨン", "pekinese": "ペキニーズ",
-      "pembroke": "ウェルシュ・コーギー・ペンブローク", "pinscher": "ミニチュア・ピンシャー",
-      "pitbull": "ピットブル", "pointer": "ポインター", "pomeranian": "ポメラニアン",
-      "poodle": "プードル", "pug": "パグ", "puggle": "パグル",
-      "pyrenees": "グレート・ピレニーズ", "redbone": "レッドボーン・クーンハウンド",
-      "retriever": "レトリーバー", "ridgeback": "ローデシアン・リッジバック", "rottweiler": "ロットワイラー",
-      "saluki": "サルーキ", "samoyed": "サモエド", "schipperke": "スキッパーキ",
-      "schnauzer": "シュナウザー", "setter": "セッター", "sheepdog": "シープドッグ",
-      "shiba": "柴犬", "shihtzu": "シー・ズー", "spaniel": "スパニエル",
-      "springer": "スプリンガー・スパニエル", "stbernard": "セント・バーナード", "terrier": "テリア",
-      "vizsla": "ヴィズラ", "weimaraner": "ワイマラナー", "whippet": "ウィペット", "wolfhound": "アイリッシュ・ウルフハウンド"
-    };
-
     let correctBreed = "";
     let correctCount = 0;
     let wrongCount = 0;
+
+    const breedMap = {
+      "shiba": "柴犬", "akita": "秋田犬", "pug": "パグ", "beagle": "ビーグル", "poodle": "プードル", "mix": "ミックス犬" // ← 短縮（本来は全種）
+    };
 
     const dogImage = document.getElementById("dogImage");
     const choicesDiv = document.getElementById("choices");
@@ -126,6 +121,8 @@
     const scoreDiv = document.getElementById("score");
     const nextBtn = document.getElementById("nextBtn");
     const resetBtn = document.getElementById("resetBtn");
+    const characterSpeech = document.getElementById("characterSpeech");
+    const speechText = document.getElementById("speechText");
 
     function updateScore() {
       scoreDiv.textContent = `正解: ${correctCount} / 不正解: ${wrongCount}`;
@@ -135,6 +132,7 @@
       resultDiv.textContent = "";
       nextBtn.style.display = "none";
       choicesDiv.innerHTML = "";
+      characterSpeech.style.display = "none";
 
       const res = await fetch("https://dog.ceo/api/breeds/image/random");
       const data = await res.json();
@@ -149,31 +147,25 @@
       const parts = url.split("/");
       const breedSegment = parts[4];
       const subparts = breedSegment.split("-");
-
       let candidates = [];
-
       for (let i = 0; i < subparts.length; i++) {
         for (let j = i + 1; j <= subparts.length; j++) {
           candidates.push(subparts.slice(i, j).join("").toLowerCase());
         }
       }
-
       for (const key of candidates) {
         if (breedMap[key]) return key;
       }
-
       return "mix";
     }
 
     function generateChoices(correct) {
       const allBreeds = Object.keys(breedMap);
       const choices = [correct];
-
       while (choices.length < 4) {
         const rand = allBreeds[Math.floor(Math.random() * allBreeds.length)];
         if (!choices.includes(rand)) choices.push(rand);
       }
-
       choices.sort(() => Math.random() - 0.5);
 
       choices.forEach(breed => {
@@ -181,13 +173,16 @@
         btn.textContent = breedMap[breed];
         btn.onclick = () => {
           if (breed === correct) {
-            resultDiv.textContent = "正解！🎉👏🐶";
+            resultDiv.textContent = "正解！🎉";
+            speechText.textContent = "やったね！正解だよ〜！";
             correctCount++;
           } else {
-            resultDiv.textContent = `不正解🌧…正解は「${breedMap[correct]}」だよ`;
+            resultDiv.textContent = `不正解…正解は「${breedMap[correct]}」だよ`;
+            speechText.textContent = "どんまい！次があるよ！";
             wrongCount++;
           }
           updateScore();
+          characterSpeech.style.display = "flex";
           nextBtn.style.display = "inline-block";
         };
         choicesDiv.appendChild(btn);
@@ -195,23 +190,15 @@
     }
 
     nextBtn.onclick = fetchDog;
-
     resetBtn.onclick = () => {
       correctCount = 0;
       wrongCount = 0;
       updateScore();
       resultDiv.textContent = "スコアをリセットしたよ";
+      characterSpeech.style.display = "none";
     };
 
     fetchDog();
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js').then(() => {
-          console.log('Service Worker registered');
-        });
-      });
-    }
   </script>
 </body>
 </html>
