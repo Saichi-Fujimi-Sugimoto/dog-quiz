@@ -1,7 +1,9 @@
 {
   "name": "犬種当てクイズ",
   "short_name": "犬クイズ",
+  "description": "かわいい犬種を当てる楽しいクイズアプリだよ",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#f0f0f0",
