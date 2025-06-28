@@ -2,12 +2,12 @@
 <html lang="ja">
 <head>
   <link rel="apple-touch-icon" href="icon-192.png">
-　<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
   <title>犬種当てクイズ</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#f0f0f0">
- <style>
+<style>
   body {
     font-family: sans-serif;
     padding: 20px;
@@ -15,10 +15,13 @@
   }
 
   img {
-    width: 300px;
-    height: 300px;
-    object-fit: cover; /* ← 見た目を均一に切り取る */
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    object-fit: cover;
     border-radius: 12px;
+    margin: 0 auto;
+    display: block;
   }
 
   .choices {
@@ -30,8 +33,10 @@
   }
 
   button {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 12px 20px;
+    font-size: 1.2rem;
+    width: 80%;
+    max-width: 300px;
     border-radius: 6px;
     border: none;
     background-color: #f0f0f0;
@@ -45,6 +50,7 @@
   #result {
     margin-top: 20px;
     font-weight: bold;
+    font-size: 1.2rem;
   }
 </style>
 </head>
