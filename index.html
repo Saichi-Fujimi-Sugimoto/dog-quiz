@@ -52,6 +52,17 @@
     font-weight: bold;
     font-size: 1.2rem;
   }
+
+  #score {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #333;
+  }
+
+  #resetBtn {
+    margin-top: 20px;
+    background-color: #ffcaca;
+  }
 </style>
 </head>
 <body>
@@ -59,7 +70,9 @@
   <img id="dogImage" src="" alt="犬の画像">
   <div class="choices" id="choices"></div>
   <div id="result"></div>
+  <div id="score">正解: 0 / 不正解: 0</div>
   <button id="nextBtn" style="display:none;">次の問題</button>
+  <button id="resetBtn">スコアをリセット</button>
 
 <script>
 const breedMap = {
@@ -157,10 +170,19 @@ const breedMap = {
 };
 
 let correctBreed = "";
+let correctCount = 0;
+let wrongCount = 0;
+
 const dogImage = document.getElementById("dogImage");
 const choicesDiv = document.getElementById("choices");
 const resultDiv = document.getElementById("result");
+const scoreDiv = document.getElementById("score");
 const nextBtn = document.getElementById("nextBtn");
+const resetBtn = document.getElementById("resetBtn");
+
+function updateScore() {
+  scoreDiv.textContent = `正解: ${correctCount} / 不正解: ${wrongCount}`;
+}
 
 async function fetchDog() {
   resultDiv.textContent = "";
@@ -178,12 +200,11 @@ async function fetchDog() {
 
 function extractBreed(url) {
   const parts = url.split("/");
-  const breedSegment = parts[4]; // e.g. retriever-golden
+  const breedSegment = parts[4];
   const subparts = breedSegment.split("-");
 
   let candidates = [];
 
-  // retriever-golden → retrievergolden, goldenretriever などを試す
   for (let i = 0; i < subparts.length; i++) {
     for (let j = i + 1; j <= subparts.length; j++) {
       candidates.push(subparts.slice(i, j).join("").toLowerCase());
@@ -194,7 +215,7 @@ function extractBreed(url) {
     if (breedMap[key]) return key;
   }
 
-  return "mix"; // fallback
+  return "mix";
 }
 
 function generateChoices(correct) {
@@ -214,9 +235,12 @@ function generateChoices(correct) {
     btn.onclick = () => {
       if (breed === correct) {
         resultDiv.textContent = "正解！🎉";
+        correctCount++;
       } else {
         resultDiv.textContent = `不正解…正解は「${breedMap[correct]}」です。`;
+        wrongCount++;
       }
+      updateScore();
       nextBtn.style.display = "inline-block";
     };
     choicesDiv.appendChild(btn);
@@ -224,6 +248,13 @@ function generateChoices(correct) {
 }
 
 nextBtn.onclick = fetchDog;
+
+resetBtn.onclick = () => {
+  correctCount = 0;
+  wrongCount = 0;
+  updateScore();
+  resultDiv.textContent = "スコアをリセットしました。";
+};
 
 fetchDog();
 
@@ -234,7 +265,6 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
-</script>
 </script>
 </body>
 </html>
