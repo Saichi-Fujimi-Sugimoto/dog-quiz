@@ -3,14 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <title>犬種当てクイズ</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; text-align: center; }
-    img { max-width: 300px; height: auto; border-radius: 12px; }
-    .choices { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-    button { padding: 10px 20px; font-size: 16px; border-radius: 6px; border: none; background-color: #f0f0f0; cursor: pointer; }
-    button:hover { background-color: #e0e0e0; }
-    #result { margin-top: 20px; font-weight: bold; }
-  </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f0f0f0">
+ <style>
+  body {
+    font-family: sans-serif;
+    padding: 20px;
+    text-align: center;
+  }
+
+  img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover; /* ← 見た目を均一に切り取る */
+    border-radius: 12px;
+  }
+
+  .choices {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #e0e0e0;
+  }
+
+  #result {
+    margin-top: 20px;
+    font-weight: bold;
+  }
+</style>
 </head>
 <body>
   <h1>この犬の種類は？</h1>
@@ -184,6 +218,15 @@ function generateChoices(correct) {
 nextBtn.onclick = fetchDog;
 
 fetchDog();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').then(() => {
+      console.log('Service Worker registered');
+    });
+  });
+}
+</script>
 </script>
 </body>
 </html>
