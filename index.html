@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>犬種当てクイズ</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; text-align: center; }
+    img { max-width: 300px; height: auto; border-radius: 12px; }
+    .choices { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+    button { padding: 10px 20px; font-size: 16px; border-radius: 6px; border: none; background-color: #f0f0f0; cursor: pointer; }
+    button:hover { background-color: #e0e0e0; }
+    #result { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>この犬の種類は？</h1>
+  <img id="dogImage" src="" alt="犬の画像">
+  <div class="choices" id="choices"></div>
+  <div id="result"></div>
+  <button id="nextBtn" style="display:none;">次の問題</button>
+
+<script>
+const breedMap = {
+  "affenpinscher": "アーフェンピンシャー",
+  "african": "アフリカン",
+  "airedale": "エアデール・テリア",
+  "akita": "秋田犬",
+  "appenzeller": "アッペンツェラー",
+  "australian": "オーストラリアン・シェパード",
+  "basenji": "バセンジー",
+  "beagle": "ビーグル",
+  "bluetick": "ブルーティック・クーンハウンド",
+  "borzoi": "ボルゾイ",
+  "bouvier": "ブービエ・デ・フランダース",
+  "boxer": "ボクサー",
+  "brabancon": "プチ・ブラバンソン",
+  "briard": "ブリアード",
+  "buhund": "ノルウェジアン・ブーフンド",
+  "bulldog": "ブルドッグ",
+  "bullterrier": "ブル・テリア",
+  "cairn": "ケアン・テリア",
+  "cattledog": "オーストラリアン・キャトル・ドッグ",
+  "chihuahua": "チワワ",
+  "chow": "チャウチャウ",
+  "clumber": "クランバー・スパニエル",
+  "cockapoo": "コッカプー",
+  "collie": "コリー",
+  "coonhound": "クーンハウンド",
+  "corgi": "コーギー",
+  "cotondetulear": "コトン・ド・テュレアール",
+  "dachshund": "ダックスフント",
+  "dalmatian": "ダルメシアン",
+  "dane": "グレート・デーン",
+  "deerhound": "スコティッシュ・ディアハウンド",
+  "dhole": "ドール",
+  "dingo": "ディンゴ",
+  "doberman": "ドーベルマン",
+  "elkhound": "ノルウェジアン・エルクハウンド",
+  "entlebucher": "エントレブッハー・キャトルドッグ",
+  "eskimo": "アメリカン・エスキモー・ドッグ",
+  "finnish": "フィニッシュ・スピッツ",
+  "frise": "ビション・フリーゼ",
+  "germanshepherd": "ジャーマン・シェパード",
+  "greyhound": "グレイハウンド",
+  "groenendael": "グローネンダール",
+  "havanese": "ハバニーズ",
+  "husky": "シベリアン・ハスキー",
+  "keeshond": "キースホンド",
+  "kelpie": "ケルピー",
+  "komondor": "コモンドール",
+  "kuvasz": "クーバース",
+  "labrador": "ラブラドール・レトリーバー",
+  "leonberg": "レオンベルガー",
+  "lhasa": "ラサ・アプソ",
+  "malamute": "アラスカン・マラミュート",
+  "malinois": "ベルジアン・マリノア",
+  "maltese": "マルチーズ",
+  "mastiff": "マスティフ",
+  "mexicanhairless": "メキシカン・ヘアレス",
+  "mix": "ミックス犬",
+  "mountain": "バーニーズ・マウンテン・ドッグ",
+  "newfoundland": "ニューファンドランド",
+  "otterhound": "オッターハウンド",
+  "papillon": "パピヨン",
+  "pekinese": "ペキニーズ",
+  "pembroke": "ウェルシュ・コーギー・ペンブローク",
+  "pinscher": "ミニチュア・ピンシャー",
+  "pitbull": "ピットブル",
+  "pointer": "ポインター",
+  "pomeranian": "ポメラニアン",
+  "poodle": "プードル",
+  "pug": "パグ",
+  "puggle": "パグル",
+  "pyrenees": "グレート・ピレニーズ",
+  "redbone": "レッドボーン・クーンハウンド",
+  "retriever": "レトリーバー",
+  "ridgeback": "ローデシアン・リッジバック",
+  "rottweiler": "ロットワイラー",
+  "saluki": "サルーキ",
+  "samoyed": "サモエド",
+  "schipperke": "スキッパーキ",
+  "schnauzer": "シュナウザー",
+  "setter": "セッター",
+  "sheepdog": "シープドッグ",
+  "shiba": "柴犬",
+  "shihtzu": "シー・ズー",
+  "spaniel": "スパニエル",
+  "springer": "スプリンガー・スパニエル",
+  "stbernard": "セント・バーナード",
+  "terrier": "テリア",
+  "vizsla": "ヴィズラ",
+  "weimaraner": "ワイマラナー",
+  "whippet": "ウィペット",
+  "wolfhound": "アイリッシュ・ウルフハウンド"
+};
+
+let correctBreed = "";
+const dogImage = document.getElementById("dogImage");
+const choicesDiv = document.getElementById("choices");
+const resultDiv = document.getElementById("result");
+const nextBtn = document.getElementById("nextBtn");
+
+async function fetchDog() {
+  resultDiv.textContent = "";
+  nextBtn.style.display = "none";
+  choicesDiv.innerHTML = "";
+
+  const res = await fetch("https://dog.ceo/api/breeds/image/random");
+  const data = await res.json();
+  const url = data.message;
+  dogImage.src = url;
+
+  correctBreed = extractBreed(url);
+  generateChoices(correctBreed);
+}
+
+function extractBreed(url) {
+  const parts = url.split("/");
+  const breedSegment = parts[4]; // e.g. retriever-golden
+  const subparts = breedSegment.split("-");
+
+  let candidates = [];
+
+  // retriever-golden → retrievergolden, goldenretriever などを試す
+  for (let i = 0; i < subparts.length; i++) {
+    for (let j = i + 1; j <= subparts.length; j++) {
+      candidates.push(subparts.slice(i, j).join("").toLowerCase());
+    }
+  }
+
+  for (const key of candidates) {
+    if (breedMap[key]) return key;
+  }
+
+  return "mix"; // fallback
+}
+
+function generateChoices(correct) {
+  const allBreeds = Object.keys(breedMap);
+  const choices = [correct];
+
+  while (choices.length < 4) {
+    const rand = allBreeds[Math.floor(Math.random() * allBreeds.length)];
+    if (!choices.includes(rand)) choices.push(rand);
+  }
+
+  choices.sort(() => Math.random() - 0.5);
+
+  choices.forEach(breed => {
+    const btn = document.createElement("button");
+    btn.textContent = breedMap[breed];
+    btn.onclick = () => {
+      if (breed === correct) {
+        resultDiv.textContent = "正解！🎉";
+      } else {
+        resultDiv.textContent = `不正解…正解は「${breedMap[correct]}」です。`;
+      }
+      nextBtn.style.display = "inline-block";
+    };
+    choicesDiv.appendChild(btn);
+  });
+}
+
+nextBtn.onclick = fetchDog;
+
+fetchDog();
+</script>
+</body>
+</html>
